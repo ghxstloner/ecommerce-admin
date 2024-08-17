@@ -15,23 +15,38 @@ datasource db {
 }
 
 model Tienda {
-  id             String      @id @default(uuid())   
+  id             String       @id @default(uuid())   
   nombre         String                          
   usuarioId      String
-  banners        Banner[]    @relation("TiendaABanner")                          
-  creadoEn       DateTime    @default(now())         
-  actualizadoEn  DateTime    @updatedAt
+  banners        Banner[]     @relation("TiendaToBanner")
+  categoria      Categoria[]  @relation("TiendaToCategoria")                         
+  creadoEn       DateTime     @default(now())         
+  actualizadoEn  DateTime     @updatedAt
 }
 
 model Banner {
   id             String   @id @default(uuid())
   tiendaId       String
-  tienda         Tienda   @relation("TiendaABanner", fields: [tiendaId], references: [id])
+  tienda         Tienda   @relation("TiendaToBanner", fields: [tiendaId], references: [id])
   label          String
   imageUrl       String
+  categorias     Categoria[]
   creadoEn       DateTime @default(now())
   actualizadoEn  DateTime @updatedAt
 
   @@index([tiendaId]) 
 }
 
+model Categoria {
+  id            String @id @default(uuid())
+  tiendaId      String
+  tienda        Tienda @relation("TiendaToCategoria", fields: [tiendaId], references: [id])
+  bannerId      String
+  banner        Banner @relation(fields: [bannerId], references: [id])
+  nombre        String
+  creadoEn       DateTime     @default(now())         
+  actualizadoEn  DateTime     @updatedAt
+
+  @@index([tiendaId])
+  @@index([bannerId])  
+}

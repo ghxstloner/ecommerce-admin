@@ -18,6 +18,10 @@ export default async function SetupLayout({
         }
     });
 
+    const banner = await prismadb.banner.findFirst({
+        
+    })
+
     if(store) {
         redirect(`${store.id}`)
     }

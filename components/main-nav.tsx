@@ -13,14 +13,29 @@ export function MainNav({
 
     const routes = [
         {
-        href: `/${params.storeId}`,
-        label: 'Dashboard',
-        active: pathname === `/${params.storeId}`
+            href: `/${params.storeId}`,
+            label: 'Panel de Control',
+            active: pathname === `/${params.storeId}`
         },
         {
-        href: `/${params.storeId}/settings`,
-        label: 'Ajustes',
-        active: pathname === `/${params.storeId}/settings`
+            href: `/${params.storeId}/banners`,
+            label: '¡Personaliza tu tienda!',
+            active: pathname === `/${params.storeId}/banners`
+        },
+        {
+            href: `/${params.storeId}/categories`,
+            label: 'Categorías',
+            active: pathname === `/${params.storeId}/categories`
+        },
+        {
+            href: `/${params.storeId}/products`,
+            label: 'Productos',
+            active: pathname === `/${params.storeId}/products`
+        },
+        {
+            href: `/${params.storeId}/settings`,
+            label: 'Ajustes',
+            active: pathname === `/${params.storeId}/settings`
         }
     ];
     return(
