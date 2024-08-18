@@ -33,6 +33,11 @@ export function MainNav({
             active: pathname === `/${params.storeId}/tamanos`
         },
         {
+            href: `/${params.storeId}/colores`,
+            label: 'Colores',
+            active: pathname === `/${params.storeId}/colores`
+        },
+        {
             href: `/${params.storeId}/products`,
             label: 'Productos',
             active: pathname === `/${params.storeId}/products`
