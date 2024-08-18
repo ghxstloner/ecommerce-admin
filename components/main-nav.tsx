@@ -23,9 +23,9 @@ export function MainNav({
             active: pathname === `/${params.storeId}/banners`
         },
         {
-            href: `/${params.storeId}/categories`,
+            href: `/${params.storeId}/categorias`,
             label: 'Categorías',
-            active: pathname === `/${params.storeId}/categories`
+            active: pathname === `/${params.storeId}/categorias`
         },
         {
             href: `/${params.storeId}/products`,

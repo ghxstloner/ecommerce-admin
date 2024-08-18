@@ -5,41 +5,43 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { BannerColumn, columns } from "./columns";
+import { CategoriaColumn, columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { Apilist } from "@/components/ui/api-list";
 
-interface BillboardClientProps {
-    data: BannerColumn[]
+interface CategoriaClientProps {
+    data: CategoriaColumn[]
 }
 
-export const BannerClient: React.FC<BillboardClientProps> = ({
+export const CategoriaClient: React.FC<CategoriaClientProps> = ({
     data
 }) => {
     const router = useRouter();
     const params = useParams();
 
+
+
     return (
         <>
             <div className="flex items-center justify-between">
                 <Heading
-                    title={`Banners (${data.length})`}
-                    description="Organiza los banners de tu tienda."
+                    title={`Categorías (${data.length})`}
+                    description="Organiza las categorías de tu tienda."
                 />
-                <Button onClick={() => router.push(`/${params.storeId}/banners/new`)}>
+                <Button onClick={() => router.push(`/${params.storeId}/categorias/new`)}>
                     <Plus className="mr-2 h-4 w-4"/>
                     Agregar
                 </Button>
             </div>
             <Separator/>
 
-            <DataTable searchKey="label" columns={columns} data={data}/>
+            <DataTable searchKey="nombre" columns={columns} data={data}/>
 
-            <Heading title="API" description="Endpoint para los banners"/>
+            <Heading title="API" description="Endpoint para las categorías"/>
             <Separator/>
             <Apilist
-                entityName="banners"
-                entityIdName="bannerId"
+                entityName="categorias"
+                entityIdName="categoriaId"
             />
         </>
     )
