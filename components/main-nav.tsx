@@ -28,6 +28,11 @@ export function MainNav({
             active: pathname === `/${params.storeId}/categorias`
         },
         {
+            href: `/${params.storeId}/tamanos`,
+            label: 'Tamaños',
+            active: pathname === `/${params.storeId}/tamanos`
+        },
+        {
             href: `/${params.storeId}/products`,
             label: 'Productos',
             active: pathname === `/${params.storeId}/products`

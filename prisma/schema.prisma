@@ -19,7 +19,9 @@ model Tienda {
   nombre         String                          
   usuarioId      String
   banners        Banner[]     @relation("TiendaToBanner")
-  categoria      Categoria[]  @relation("TiendaToCategoria")                         
+  categoria      Categoria[]  @relation("TiendaToCategoria")
+  tamano         Tamano[]     @relation("TiendaToTamano")
+  color          Color[]      @relation("TiendaToColor")                         
   creadoEn       DateTime     @default(now())         
   actualizadoEn  DateTime     @updatedAt
 }
@@ -38,15 +40,39 @@ model Banner {
 }
 
 model Categoria {
-  id            String @id @default(uuid())
-  tiendaId      String
-  tienda        Tienda @relation("TiendaToCategoria", fields: [tiendaId], references: [id])
-  bannerId      String
-  banner        Banner @relation(fields: [bannerId], references: [id])
-  nombre        String
+  id             String @id @default(uuid())
+  tiendaId       String
+  tienda         Tienda @relation("TiendaToCategoria", fields: [tiendaId], references: [id])
+  bannerId       String
+  banner         Banner @relation(fields: [bannerId], references: [id])
+  nombre         String
   creadoEn       DateTime     @default(now())         
   actualizadoEn  DateTime     @updatedAt
 
   @@index([tiendaId])
   @@index([bannerId])  
+}
+
+model Tamano {
+  id             String @id @default(uuid())
+  tiendaId       String
+  tienda         Tienda @relation("TiendaToTamano",fields: [tiendaId], references: [id])
+  nombre         String
+  valor          String
+  creadoEn       DateTime @default(now())
+  actualizadoEn  DateTime @updatedAt
+
+  @@index([tiendaId])
+}
+
+model Color {
+  id             String @id @default(uuid())
+  tiendaId       String
+  tienda         Tienda @relation("TiendaToColor",fields: [tiendaId], references: [id])
+  nombre         String
+  valor          String
+  creadoEn       DateTime @default(now())
+  actualizadoEn  DateTime @updatedAt
+
+  @@index([tiendaId])
 }
