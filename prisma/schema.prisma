@@ -22,7 +22,8 @@ model Tienda {
   categoria      Categoria[]  @relation("TiendaToCategoria")
   tamano         Tamano[]     @relation("TiendaToTamano")
   color          Color[]      @relation("TiendaToColor")
-  producto       Producto[]   @relation("TiendaToProducto") 
+  producto       Producto[]   @relation("TiendaToProducto")
+  pedidos        Pedido[]     @relation("TiendaToPedido")
 
   creadoEn       DateTime     @default(now())         
   actualizadoEn  DateTime     @updatedAt
@@ -101,6 +102,7 @@ model Producto {
   colorId        String
   color          Color   @relation(fields: [colorId], references: [id])
   imagenes       Imagen[]
+  itemsPedido    ItemsPedido[]
 
   creadoEn       DateTime @default(now())
   actualizadoEn  DateTime @updatedAt
@@ -120,5 +122,31 @@ model Imagen {
   creadoEn        DateTime @default(now())
   actualizadoEn   DateTime @updatedAt
 
+  @@index([productoId])
+}
+
+model Pedido {
+  id               String    @id @default(uuid())
+  tiendaId         String
+  tienda           Tienda    @relation("TiendaToPedido", fields: [tiendaId], references: [id])
+  itemsPedido      ItemsPedido[] 
+  estaPagado       Boolean   @default(false) 
+  numeroTelefono   String    @default("")
+  direccion        String    @default("")
+  creadoEn         DateTime  @default(now()) 
+
+  @@index([tiendaId])
+}
+
+model ItemsPedido {
+  id               String    @id @default(uuid())
+  pedidoId         String
+  pedido           Pedido    @relation(fields: [pedidoId], references: [id])
+  productoId       String
+  producto         Producto  @relation(fields: [productoId], references: [id])
+
+
+  creadoEn         DateTime  @default(now()) 
+  @@index([pedidoId])
   @@index([productoId])
 }
