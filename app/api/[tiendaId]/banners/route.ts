@@ -54,7 +54,7 @@ export async function POST(
     const banner = await prismadb.banner.create({
       data: {
         label,
-        imageUrl: `/${params.tiendaId}/${uniqueFileName}`,
+        imageUrl: `/${params.tiendaId}/banners/${uniqueFileName}`,
         tiendaId: params.tiendaId,
       },
     });

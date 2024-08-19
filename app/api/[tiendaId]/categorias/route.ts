@@ -53,23 +53,23 @@ export async function POST(
 
 export async function GET(
   req: Request,
-  { params }: { params: { storeId: string} }
+  { params }: { params: { tiendaId: string} }
 ) {
   try {
 
-    if(!params.storeId) {
+    if(!params.tiendaId) {
       return new NextResponse("El ID de la tienda es necesario", { status: 400 })
     }
 
-    const banner = await prismadb.categoria.findMany({
+    const categoria = await prismadb.categoria.findMany({
       where: {
-        tiendaId: params.storeId
+        tiendaId: params.tiendaId
       }
     });
 
-    return NextResponse.json(banner);
+    return NextResponse.json(categoria);
   } catch (error) {
-    console.log("[CATEGORIA_DELETE]", error);
+    console.log("[CATEGORIA_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

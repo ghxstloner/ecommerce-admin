@@ -87,6 +87,8 @@ export const BannerForm: React.FC<BannerFormProps> = ({
         }
     }
 
+    const maxFiles = 1;
+
     return (
         <>
             <AlertModal
@@ -122,10 +124,27 @@ export const BannerForm: React.FC<BannerFormProps> = ({
                             <FormLabel>Imagen del fondo</FormLabel>
                             <FormControl>
                             <ImageUpload
-                            onChange={(url) => field.onChange(url)} 
-                            value={field.value ? field.value.replace('/public', '') : ''}
-                            maxFiles={1}
+                                onChange={(url) => {
+                                    if (maxFiles === 1) {
+                                        field.onChange(url); 
+                                    } else {
+                                        field.onChange(Array.isArray(url) ? url : [url]);
+                                    }
+                                }}
+                                value={
+                                    maxFiles === 1
+                                        ? (typeof field.value === 'string' ? field.value.replace('/public', '') : '')
+                                        : Array.isArray(field.value)
+                                            ? field.value.map((imageObj) =>
+                                                typeof imageObj.url === "string"
+                                                    ? imageObj.url.replace('/public', '')
+                                                    : ''
+                                            )
+                                            : []
+                                }
+                                maxFiles={1}
                             />
+
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
