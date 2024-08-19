@@ -115,7 +115,7 @@ model Imagen {
   id              String @id @default(uuid())
   productoId      String
   producto        Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
-  url             String
+  url             String   @db.LongText
 
   creadoEn        DateTime @default(now())
   actualizadoEn   DateTime @updatedAt

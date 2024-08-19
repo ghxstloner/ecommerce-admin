@@ -44,7 +44,7 @@ export async function POST(
     const extension = mimeType.split('/')[1];
     
     const uniqueFileName = `${uuidv4()}.${extension}`;
-    const imagePath = path.join(process.cwd(), `public/${params.tiendaId}/${uniqueFileName}`);
+    const imagePath = path.join(process.cwd(), `public/${params.tiendaId}/banners/${uniqueFileName}`);
 
     const base64Data = imageUrl.replace(/^data:image\/\w+;base64,/, "");
 
@@ -61,7 +61,7 @@ export async function POST(
 
     return NextResponse.json(banner);
   } catch (error) {
-    console.log("[STORE_POST]", error);
+    console.log("[BANNER_POST]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
@@ -72,11 +72,14 @@ export async function GET(
 ) {
   try {
     const banner = await prismadb.banner.findMany({
+      where: {
+        tiendaId: params.tiendaId
+      }
     });
 
     return NextResponse.json(banner);
   } catch (error) {
-    console.log("[BANNER_DELETE]", error);
+    console.log("[BANNER_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

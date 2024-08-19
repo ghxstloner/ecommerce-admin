@@ -122,8 +122,9 @@ export const BannerForm: React.FC<BannerFormProps> = ({
                             <FormLabel>Imagen del fondo</FormLabel>
                             <FormControl>
                             <ImageUpload
-                                onChange={field.onChange}
-                                value={field.value ? field.value.replace('/public', '') : ''} 
+                            onChange={(url) => field.onChange(url)} 
+                            value={field.value ? field.value.replace('/public', '') : ''}
+                            maxFiles={1}
                             />
                             </FormControl>
                             <FormMessage/>

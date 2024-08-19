@@ -38,9 +38,9 @@ export function MainNav({
             active: pathname === `/${params.storeId}/colores`
         },
         {
-            href: `/${params.storeId}/products`,
+            href: `/${params.storeId}/productos`,
             label: 'Productos',
-            active: pathname === `/${params.storeId}/products`
+            active: pathname === `/${params.storeId}/productos`
         },
         {
             href: `/${params.storeId}/settings`,
