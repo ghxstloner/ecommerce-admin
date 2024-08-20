@@ -194,7 +194,7 @@ export const ProductoForm: React.FC<ProductoFormProps> = ({
                                 <FormItem>
                                     <FormLabel>Precio</FormLabel>
                                     <FormControl>
-                                        <Input type="number" disabled={loading} placeholder="5.99" {...field}></Input>
+                                        <Input type="number" disabled={loading} placeholder="5.000" {...field}></Input>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
