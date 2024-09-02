@@ -17,13 +17,14 @@ export async function OPTIONS(){
 
 export async function POST(
     req: Request,
-    {params }: {params:{tiendaId: string}}
-){
-    const {productoIds} = await req.json();
+    { params }: { params: { tiendaId: string } }
+) {
+    const { productoIds } = await req.json();
 
-    if(!productoIds || productoIds.length === 0){
-        return new NextResponse("Los ID's de los productos son requeridos", {status: 400});
+    if (!productoIds || productoIds.length === 0) {
+        return new NextResponse("Los ID's de los productos son requeridos", { status: 400 });
     }
+
     const productos = await prismadb.producto.findMany({
         where: {
             id: {
@@ -31,6 +32,11 @@ export async function POST(
             },
         },
     });
+
+    if (productos.length !== productoIds.length) {
+        return new NextResponse("Algunos productos no existen en la base de datos", { status: 400 });
+    }
+
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
     productos.forEach((producto) => {
         line_items.push({
@@ -42,7 +48,7 @@ export async function POST(
                 },
                 unit_amount: producto.precio.toNumber() * 100
             }
-        })
+        });
     });
 
     const pedido = await prismadb.pedido.create({
@@ -65,18 +71,17 @@ export async function POST(
         line_items,
         mode: "payment",
         billing_address_collection: "required",
-        phone_number_collection:{
+        phone_number_collection: {
             enabled: true
         },
         success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
         cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?cancel=1`,
-        metadata:{
+        metadata: {
             orderId: pedido.id
         }
     });
 
-    return NextResponse.json({url: session.url},{
+    return NextResponse.json({ url: session.url }, {
         headers: corsHeaders
     });
-
 };
