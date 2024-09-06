@@ -1,4 +1,14 @@
+import { getSalesCount } from "@/actions/get-sales-count";
+import { getStockCount } from "@/actions/get-stock-count";
+import { getTotalRevenue } from "@/actions/get-total-revenue";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
+import { Separator } from "@/components/ui/separator";
 import prismadb from "@/lib/prismadb"
+import { createFormatter } from "@/lib/utils";
+import { DollarSign, CreditCard, Package, Car } from "lucide-react";
+import { Overview } from "@/components/overview";
+import { getGraphRevenue } from "@/actions/get-graph-revenue";
 
 interface DashboardPageProps {
     params: {storeId: string}
@@ -7,15 +17,74 @@ interface DashboardPageProps {
 const DashboardPage: React.FC<DashboardPageProps> = async ({
     params
 }) => {
-    const store = await prismadb.tienda.findFirst({
-        where: {
-            id: params.storeId
-        }
-    })
-    console.log("Tienda: ", store);
+    const tienda = await prismadb.tienda.findUnique({
+        where: { id: params.storeId },
+        select: { divisa: true }
+    });
+
+    const divisa = tienda?.divisa || "USD";
+    const formatter = createFormatter(divisa);
+
+    const totalRevenue = await getTotalRevenue(params.storeId);
+    const salesCount = await getSalesCount(params.storeId);
+    const stockCount = await getStockCount(params.storeId);
+    const graphRevenue = await getGraphRevenue(params.storeId);
+
     return (
-        <div>
-            Active Store: {store?.nombre}
+        <div className="flex-col">
+            <div className="flex-1 space-y-4 p-8 pt-6">
+                <Heading title="Dashboard" description="Resumen de la Tienda"/>
+                <Separator/>
+                <div className="grid gap-4 grid-cols-3">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Ventas Totales
+                            </CardTitle>
+                            <DollarSign className="h-4 w-4 text-muted-foreground"/>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                                {formatter.format(totalRevenue)}
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Ventas
+                            </CardTitle>
+                            <CreditCard className="h-4 w-4 text-muted-foreground"/>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                                {salesCount}
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Cantidad Productos Vendidos
+                            </CardTitle>
+                            <Package className="h-4 w-4 text-muted-foreground"/>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                                {stockCount}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+                <Card className="col-span-4">
+                    <CardHeader>
+                        <CardTitle>Ventas por Mes</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pl-2">
+                        <Overview data= {graphRevenue}/>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     )
 }

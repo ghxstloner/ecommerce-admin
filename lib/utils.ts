@@ -1,11 +1,22 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export const formatter = new Intl.NumberFormat("es-CO", {
-  style: "currency",
-  currency: "COP"
-});
+const locales: Record<string, string> = {
+  USD: "en-US",
+  COP: "es-CO",
+  EUR: "es-ES", 
+};
+
+export function createFormatter(currency: string = "COP") {
+  const locale = locales[currency] || "es-CO";
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+  });
+}
+
+export const formatter = createFormatter("COP");

@@ -25,9 +25,18 @@ model Tienda {
   producto       Producto[]   @relation("TiendaToProducto")
   pedidos        Pedido[]     @relation("TiendaToPedido")
 
+  divisa         Divisa       @default(COP)
+
   creadoEn       DateTime     @default(now())         
   actualizadoEn  DateTime     @updatedAt
 }
+
+enum Divisa {
+  COP  
+  USD 
+  EUR
+}
+
 
 model Banner {
   id             String   @id @default(uuid())

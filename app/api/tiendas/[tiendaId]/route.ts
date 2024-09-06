@@ -9,7 +9,7 @@ export async function PATCH(
     try {
         const {userId} = auth();
         const body = await req.json();
-        const {nombre} = body;
+        const {nombre, divisa} = body;
 
         if(!userId){
             return new NextResponse("Unauthenticated", {status: 401})
@@ -29,7 +29,8 @@ export async function PATCH(
                 usuarioId: userId
             },
             data: {
-                nombre
+                nombre,
+                divisa
             }
         })
 

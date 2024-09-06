@@ -1,18 +1,25 @@
-import {format} from "date-fns";
+import { format } from "date-fns";
 import { es } from 'date-fns/locale';
 
 import { PedidoColumn } from "./components/columns";
 import { PedidoClient } from "./components/client";
 import prismadb from "@/lib/prismadb";
-import { formatter } from "@/lib/utils";
+import { createFormatter } from "@/lib/utils";
 
 const PedidosPage = async ({
     params
 }: {
-    params: {storeId: string}
+    params: { storeId: string }
 }) => {
+    const tienda = await prismadb.tienda.findUnique({
+        where: { id: params.storeId },
+        select: { divisa: true } // Solo obtener la divisa
+    });
+
+    const divisa = tienda?.divisa || "USD";
+    const formatter = createFormatter(divisa);
     const pedidos = await prismadb.pedido.findMany({
-        where:{
+        where: {
             tiendaId: params.storeId
         },
         include: {
@@ -50,5 +57,5 @@ const PedidosPage = async ({
         </div>
       );
 }
- 
+
 export default PedidosPage;

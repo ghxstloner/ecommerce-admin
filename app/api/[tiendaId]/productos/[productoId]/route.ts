@@ -1,6 +1,9 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from 'uuid';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 export async function GET(
   req: Request,
@@ -94,6 +97,25 @@ export async function PATCH(
       return new NextResponse("Sin autorización.", { status: 403 });
     }
 
+    const savedImages = [];
+    for (const imagen of imagenes) {
+      const mimeType = imagen.url.match(/data:(image\/\w+);base64,/i)?.[1];
+      if (!mimeType) {
+        return new NextResponse("Formato de imagen no soportado.", { status: 400 });
+      }
+
+      const extension = mimeType.split('/')[1];
+      const uniqueFileName = `${uuidv4()}.${extension}`;
+      const imagePath = path.join(process.cwd(), `public/${params.tiendaId}/productos/${uniqueFileName}`);
+
+      const base64Data = imagen.url.replace(/^data:image\/\w+;base64,/, "");
+
+      await fs.mkdir(path.dirname(imagePath), { recursive: true });
+      await fs.writeFile(imagePath, base64Data, 'base64');
+
+      savedImages.push({ url: `/${params.tiendaId}/productos/${uniqueFileName}` });
+    }
+
     const updatedProducto = await prismadb.producto.update({
       where: {
         id: params.productoId,
@@ -109,9 +131,7 @@ export async function PATCH(
         imagenes: {
           deleteMany: {},
           createMany: {
-            data: [
-              ...imagenes.map((imagen: {url: string}) => imagen)
-            ]
+            data: savedImages
           }
         }
       },

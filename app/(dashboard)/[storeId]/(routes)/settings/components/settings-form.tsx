@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -23,7 +24,8 @@ interface SettingsFormProps {
 }
 
 const formSchema = z.object({
-    nombre: z.string().min(1)
+    nombre: z.string().min(1),
+    divisa: z.enum(["COP", "USD", "EUR"])
 })
 
 type SettingsFormValues = z.infer<typeof formSchema>;
@@ -63,7 +65,6 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
             router.refresh();
             router.push("/")
             toast.success("Tienda eliminada.");
-
         } catch(error){
             toast.error("Debes eliminar todos los productos y las categorías primero.")
         } finally {
@@ -97,7 +98,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
             <Separator/>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-                    <div className="grid grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-md">
                         <FormField
                             control={form.control}
                             name="nombre"
@@ -106,6 +107,33 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
                                     <FormLabel>Nombre</FormLabel>
                                     <FormControl>
                                         <Input disabled={loading} placeholder="Nombre de la tienda" {...field}></Input>
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="divisa"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Divisa</FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            disabled={loading}
+                                            onValueChange={field.onChange}
+                                            value={field.value}
+                                            defaultValue={initialData.divisa}
+                                        >
+                                            <SelectTrigger>
+                                                <span>{field.value || "Selecciona una divisa"}</span>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="COP">Pesos Colombianos</SelectItem>
+                                                <SelectItem value="USD">Dólares Estadounidenses</SelectItem>
+                                                <SelectItem value="EUR">Euro</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
@@ -122,8 +150,6 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
             title="NEXT_PUBLIC_API_URL" 
             description={`${origin}/api/${params.storeId}`} 
             variant="public"/>
-
         </>
-      );
+    );
 }
- 

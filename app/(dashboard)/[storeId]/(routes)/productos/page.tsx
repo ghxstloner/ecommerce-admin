@@ -4,7 +4,7 @@ import { es } from 'date-fns/locale';
 import { ProductoColumn } from "./components/columns";
 import { ProductoClient } from "./components/client";
 import prismadb from "@/lib/prismadb";
-import { formatter } from "@/lib/utils";
+import { createFormatter } from "@/lib/utils";
 
 const ProductosPage = async ({
     params
@@ -24,6 +24,14 @@ const ProductosPage = async ({
             creadoEn: 'desc'
         }
     });
+
+    const tienda = await prismadb.tienda.findUnique({
+        where: { id: params.storeId },
+        select: { divisa: true }
+    });
+
+    const divisa = tienda?.divisa || "USD";
+    const formatter = createFormatter(divisa);
 
     const formattedProductos: ProductoColumn[] = productos.map((item) => ({
         id: item.id,
